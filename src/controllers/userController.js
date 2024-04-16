@@ -1,3 +1,4 @@
+const sendEmail = require("../config/mail");
 const { Contact } = require("../models/contactModel");
 const { User } = require("../models/userModel");
 
@@ -45,6 +46,28 @@ const getUserContacts = async (req, res, next) => {
   }
 };
 
+const sendEmailForHelp = async (req, res, next) => {
+  try {
+    const contacts = await Contact.find({ userUid: req.params.uid });
+    const emails = contacts.map((contact) => contact.email);
+    const userInfo = await User.findOne({ uid: req.params.uid });
+    const userName = userInfo.name;
+    const userPhone = userInfo.phone;
+
+    sendEmail(userName, userPhone, req.body.area, req.body.subArea, emails);
+
+    res.status(200).json({
+      success: true,
+      emails,
+      userName,
+      userPhone,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.createUser = createUser;
 exports.createContact = createContact;
 exports.getUserContacts = getUserContacts;
+exports.sendEmailForHelp = sendEmailForHelp;

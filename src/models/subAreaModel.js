@@ -10,6 +10,10 @@ const subAreaSchema = new mongoose.Schema({
     ref: "Area",
     required: true,
   },
+  cases: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const SubArea = mongoose.model("SubArea", subAreaSchema);
